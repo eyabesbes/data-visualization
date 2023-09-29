@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        #chart-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+   
+          body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+          }
+    
+          #header {
+            background-color: #0b1748;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+          }
+    
+          #header h1 {
+            margin: 0;
+          }
+    
+          #content {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          }
+    
+          button {
+            background-color: #0b1748;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+          }
+    
+          button:hover {
+            background-color: #fff;
+            color: #0b1748;
+            border: 2px solid #0b1748;
+          }
+    
+          #footer {
+            background-color: #0b1748;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+          }
+    
+          #footer p {
+            margin: 0;
+          }
+        </style>
+</head>
+<body>
+    <h1>Répartition des fleurs d'Iris selon la classe</h1>
+    <div id="legend-container"></div>
+
+    <div id="chart-container">
+        <svg width="400" height="400"></svg>
+        <div id="legend-container"></div>
+    </div>
+
+    <script>
+      // Données d'exemple
+var data = [
+  { class: "Iris-setosa", count: 50 },
+  { class: "Iris-versicolor", count: 50 },
+  { class: "Iris-virginica", count: 50 }
+];
+
+// Configuration du graphique
+var width = 400;
+var height = 400;
+var radius = Math.min(width, height) / 2;
+var color = d3.scaleOrdinal(d3.schemeSet2);
+
+// Création du graphique
+var svg = d3.select("svg")
+  .append("g")
+  .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+var arc = d3.arc()
+  .innerRadius(0)
+  .outerRadius(radius);
+
+var pie = d3.pie()
+  .sort(null)
+  .value(function(d) { return d.count; });
+
+var path = svg.selectAll("path")
+  .data(pie(data))
+  .enter()
+  .append("path")
+  .attr("d", arc)
+  .attr("fill", function(d) { return color(d.data.class); })
+  .on("mouseover", function(d) {
+    // Affichage d'une info-bulle au survol d'un segment
+    d3.select(this)
+      .transition()
+      .duration(200)
+      .attr("d", d3.arc()
+        .innerRadius(0)
+        .outerRadius(radius * 1.1)
+      );
+  })
+  .on("mouseout", function(d) {
+    // Retour à la taille normale du segment
+    d3.select(this)
+      .transition()
+      .duration(200)
+      .attr("d", arc);
+  });
+
+// Ajout d'une légende
+var legend = d3.select("#legend-container")
+  .selectAll(".legend")
+  .data(color.domain())
+  .enter()
+  .append("div")
+  .attr("class", "legend");
+
+legend.append("span")
+  .attr("class", "legend-color")
+  .style("background-color", color);
+
+legend.append("span")
+  .attr("class", "legend-label")
+  .text(function(d) { return d; });
+  
+  var path = svg.selectAll("path")
+  .data(pie(data))
+  .enter()
+  .append("path")
+  .attr("d", arc)
+  .attr("fill", function(d) { return color(d.data.class); })
+  .on("mouseover", function(d) {
+    // Affichage d'une info-bulle au survol d'un segment
+    d3.select(this)
+      .transition()
+      .duration(200)
+      .attr("d", d3.arc()
+        .innerRadius(0)
+        .outerRadius(radius * 1.1)
+      );
+  })
+  .on("mouseout", function(d) {
+    // Retour à la taille normale du segment
+    d3.select(this)
+      .transition()
+      .duration(200)
+      .attr("d", arc);
+  })
+  .append("text")
+  .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+  .attr("dy", ".35em")
+  .text(function(d) { return d.data.class; });
+
+    </script>
+      <a href="main%20.html"><button>Retour </button></a>
+</body>
+</html>
